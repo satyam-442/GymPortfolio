@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Open URL Fields</title>
+  <style>
+    /*
+      The core changes are in the CSS media queries and the flex/grid
+      properties to ensure the layout adapts smoothly to smaller screens.
+    */
+    :root {
+      --bg: #0c0a09; /* stone-950 */
+      --card: #1c1917; /* stone-900 */
+      --muted: #a8a29e; /* stone-400 */
+      --text: #e7e5e4; /* stone-200 */
+      --accent: #22d3ee; /* cyan-400 */
+      --accent-2: #c084fc; /* violet-400 */
+      --ring: rgba(34, 211, 238, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(192, 132, 252, .15), transparent),
+                  radial-gradient(900px 600px at 90% 20%, rgba(34, 211, 238, .12), transparent),
+                  var(--bg);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      overflow-y: auto; /* Ensure scrolling is possible on small screens */
+    }
+
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 5vw, 2.5rem); /* Responsive font size */
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    p.sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(14px, 2.5vw, 16px); /* Responsive font size */
+      max-width: 500px;
+      line-height: 1.5;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: center;
+      padding: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      transition: background 0.2s ease;
+    }
+
+    .row:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(17, 24, 39, 0.65);
+      color: var(--text);
+      outline: none;
+      font-size: 16px;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+
+    input[type="text"]:focus {
+      box-shadow: 0 0 0 4px var(--ring);
+      border-color: var(--accent);
+    }
+    
+    button {
+      height: 52px;
+      padding: 0 24px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #0b1020;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .2px;
+      transition: transform .06s ease, filter .2s ease;
+      white-space: nowrap;
+    }
+
+    button:hover { filter: brightness(1.05); }
+    button:active { transform: translateY(1px); }
+
+    .hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+    /* --- RESPONSIVENESS IMPROVEMENTS --- */
+    
+    /* General mobile-first adjustments */
+    @media (max-width: 768px) {
+      .card {
+        padding: 30px;
+        gap: 20px;
+      }
+      .row {
+        padding: 12px;
+        gap: 16px;
+      }
+      label, .hint {
+        font-size: 13px;
+      }
+    }
+
+    /* Stack elements on small phones */
+    @media (max-width: 520px) {
+      .row { 
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      button { 
+        width: 100%; 
+        height: 48px; 
+      }
+      .card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <h1>Open URL</h1>
+    <p class="sub">Enter a URL in each field and click its button to open it in a new tab.</p>
+
+    <div class="row">
+      <div class="field">
+        <label for="url1">URL Field 1</label>
+        <input id="url1" type="text" placeholder="https://example.com" autocomplete="url" />
+        <div class="hint">Tip: You can press Enter to open.</div>
+      </div>
+      <button id="btn1" aria-label="Open first URL">Open</button>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="url2">URL Field 2</label>
+        <input id="url2" type="text" placeholder="https://openai.com" autocomplete="url" />
+        <div class="hint">If protocol is missing, we'll use https://</div>
+      </div>
+      <button id="btn2" aria-label="Open second URL">Open</button>
+    </div>
+  </main>
+
+  <script>
+    function normalizeUrl(value) {
+      if (!value) return "";
+      const trimmed = value.trim();
+      // If it already has a protocol, use as-is; otherwise, prefix https://
+      if (/^https?:\/\//i.test(trimmed)) return trimmed;
+      return `https://${trimmed}`;
+    }
+
+    function openFromInput(inputId) {
+      const el = document.getElementById(inputId);
+      const url = normalizeUrl(el.value);
+      try {
+        // Validate URL format
+        const u = new URL(url);
+        window.open(u.href, "_blank", "noopener");
+      } catch (e) {
+        alert("Please enter a valid URL (e.g., https://example.com)");
+      }
+    }
+
+    // Wire up buttons
+    document.getElementById("btn1").addEventListener("click", () => openFromInput("url1"));
+    document.getElementById("btn2").addEventListener("click", () => openFromInput("url2"));
+
+    // Allow Enter key to trigger the corresponding Open action
+    [["url1","btn1"],["url2","btn2"]].forEach(([inputId, btnId]) => {
+      const input = document.getElementById(inputId);
+      const btn = document.getElementById(btnId);
+      input.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") {
+          ev.preventDefault();
+          btn.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
