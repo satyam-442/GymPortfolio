@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ServiceNow Quick Open</title>
+  <title>Main Menu</title>
   <style>
-    /* The core changes are in the CSS, where I've refined the color palette,
-      typography, and layout to create a more polished aesthetic.
-    */
+    /* === Your Strict Stylesheet === */
     :root {
-      --bg: #0c0a09; /* stone-950 */
+      --bg: #090b0c; /* stone-950 */
       --card: #1c1917; /* stone-900 */
       --muted: #a8a29e; /* stone-400 */
       --text: #e7e5e4; /* stone-200 */
@@ -38,127 +36,161 @@
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 20px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.45);
-      padding: 40px; /* Increased padding for better spacing */
+      padding: 40px;
       display: flex;
       flex-direction: column;
-      gap: 24px; /* Added gap for consistent spacing between elements */
+      gap: 24px;
+      animation: fadeIn 0.8s ease-in-out;
     }
-    h1 {
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1.card-title {
       margin: 0;
-      font-size: 2.5rem; /* Larger, more prominent heading */
-      font-weight: 700;
-      letter-spacing: -0.5px;
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      text-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
     }
     p.sub {
       margin: 0;
       color: var(--muted);
-      font-size: 16px; /* Slightly larger for readability */
+      font-size: 16px;
       max-width: 500px;
       line-height: 1.5;
     }
-    .row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 20px; /* Increased gap for better visual separation */
-      align-items: center;
-      padding: 16px; /* Slightly larger padding */
+    /* --- Card Menu Styles --- */
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .menu-card {
+      position: relative;
+      padding: 20px;
+      border-radius: 16px;
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      transition: background 0.2s ease; /* Smooth transition on hover */
-    }
-    .row:hover {
-      background: rgba(255,255,255,0.05); /* Lighter background on hover */
-    }
-    label {
-      display: block;
-      font-size: 14px; /* Slightly larger label */
-      color: var(--muted);
-      margin-bottom: 8px; /* Increased margin */
-      font-weight: 500;
-    }
-    .field { display: flex; flex-direction: column; }
-    input[type="text"] {
-      width: 100%;
-      padding: 14px; /* More vertical padding */
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(17, 24, 39, 0.65);
-      color: var(--text);
-      outline: none;
-      font-size: 16px; /* Larger font size for input */
-      transition: box-shadow .15s ease, border-color .15s ease;
-    }
-    input[type="text"]:focus {
-      box-shadow: 0 0 0 4px var(--ring);
-      border-color: var(--accent);
-    }
-    button {
-      height: 52px; /* Taller button for easier clicking */
-      padding: 0 24px; /* More horizontal padding */
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #0b1020;
-      font-weight: 700;
       cursor: pointer;
-      letter-spacing: .2px;
-      transition: transform .06s ease, filter .2s ease;
-      white-space: nowrap; /* Prevents text from wrapping on smaller screens */
+      transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
+      z-index: 1;
+      display: flex; /* Added for icon positioning */
+      justify-content: space-between; /* Added for icon positioning */
+      align-items: center; /* Added for icon positioning */
     }
-    button:hover { filter: brightness(1.05); }
-    button:active { transform: translateY(1px); }
+    .menu-card-content { /* New wrapper for text content */
+      flex-grow: 1;
+    }
+    .menu-card:hover {
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    .menu-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.1), transparent 70%);
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    .menu-card:hover::before {
+      opacity: 1;
+    }
+    .menu-card h2 {
+      margin: 0 0 6px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    .menu-card:hover h2 {
+      color: var(--accent);
+    }
+    .menu-card p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      transition: color 0.2s ease;
+    }
+    .menu-card:hover p {
+      color: var(--text);
+    }
+    /* Arrow Icon Styling */
+    .card-icon {
+      margin-left: 20px;
+      color: var(--muted);
+      transition: transform 0.2s ease, color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .menu-card:hover .card-icon {
+      color: var(--accent);
+      transform: translateX(5px);
+    }
+    .card-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+    }
+
     @media (max-width: 520px) {
-      .row { grid-template-columns: 1fr; }
-      button { width: 100%; height: 48px; }
       .card { padding: 24px; }
+      h1.card-title { font-size: 1.75rem; }
     }
   </style>
 </head>
 <body>
   <main class="card">
-    <h1>ServiceNow Quick Open</h1>
-    <p class="sub">Enter your Incident or Request number and open it directly in ServiceNow.</p>
-    <div class="row">
-      <div class="field">
-        <label for="incInput">Incident Number (INC)</label>
-        <input id="incInput" type="text" placeholder="INC1234567" />
+    <h1 class="card-title">4DATA Utilities</h1>
+    <p class="sub">Choose a tool to continue:</p>
+
+    <div class="menu">
+      <div class="menu-card" onclick="location.href='quick-open.html'">
+        <div class="menu-card-content">
+          <h2>ServiceNow Quick Open</h2>
+          <p>Open INC and REQ numbers directly in ServiceNow.</p>
+        </div>
+        <span class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </span>
       </div>
-      <button id="incBtn" aria-label="Open Incident">Open INC</button>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label for="reqInput">Request Number (REQ)</label>
-        <input id="reqInput" type="text" placeholder="REQ9876543" />
+
+      <div class="menu-card" onclick="location.href='description-generator.html'">
+        <div class="menu-card-content">
+          <h2>ServiceNow Description Generator</h2>
+          <p>Create structured ticket descriptions quickly.</p>
+        </div>
+        <span class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </span>
       </div>
-      <button id="reqBtn" aria-label="Open Request">Open REQ</button>
+
+      <div class="menu-card" onclick="location.href='airflow-runner.html'">
+        <div class="menu-card-content">
+          <h2>Airflow DAG Runner</h2>
+          <p>Trigger and monitor Airflow DAG executions.</p>
+        </div>
+        <span class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </span>
+      </div>
     </div>
   </main>
-  <script>
-    // 🔧 Replace with your real ServiceNow instance URL
-    const SN_INSTANCE = "https://yourcompany.service-now.com";
-    function openSNRecord(type, inputId) {
-      const val = document.getElementById(inputId).value.trim().toUpperCase();
-      if (!val || !val.startsWith(type)) {
-        alert(`Please enter a valid ${type} number (e.g., ${type}1234567)`);
-        return;
-      }
-      // Construct URL: adjust table names as per your SN setup
-      let table = type === "INC" ? "incident" : "sc_request";
-      let url = `${SN_INSTANCE}/${table}.do?sysparm_query=number=${val}`;
-      window.open(url, "_blank", "noopener");
-    }
-    document.getElementById("incBtn").addEventListener("click", () => openSNRecord("INC", "incInput"));
-    document.getElementById("reqBtn").addEventListener("click", () => openSNRecord("REQ", "reqInput"));
-    // Allow Enter key
-    [["incInput","incBtn"],["reqInput","reqBtn"]].forEach(([inp, btn]) => {
-      document.getElementById(inp).addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          document.getElementById(btn).click();
-        }
-      });
-    });
-  </script>
 </body>
 </html>
